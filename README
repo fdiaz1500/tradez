@@ -1,0 +1,200 @@
+# Crypto Exchange Web Application
+
+A scalable, containerized cryptocurrency trading platform built with Node.js, React, PostgreSQL, and Docker.
+
+## Overview
+
+This application allows users to:
+
+- Create accounts and manage wallets for different cryptocurrencies
+- View real-time exchange rates
+- Execute trades between different cryptocurrencies
+- View transaction history
+
+The architecture is designed to be lean and scalable, making it suitable for enterprise-level deployments.
+
+## Technologies
+
+- **Frontend**: React.js with Material-UI
+- **Backend**: Node.js with Express.js
+- **Database**: PostgreSQL
+- **Caching**: Redis
+- **Containerization**: Docker and Docker Compose
+- **API Integration**: CoinGecko API (or any other crypto exchange API)
+
+## Project Structure
+
+```
+crypto-exchange/
+├── docker-compose.yml          # Services orchestration
+├── .env                        # Environment variables
+├── frontend/                   # React frontend
+│   ├── Dockerfile
+│   └── src/
+├── backend/                    # Node.js backend
+│   ├── Dockerfile
+│   └── src/
+└── db/                         # Database scripts
+    └── init.sql                # DB initialization script
+```
+
+## Prerequisites
+
+- Docker and Docker Compose
+- Node.js (for local development)
+- npm or yarn (for local development)
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+# Database
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_DB=crypto_exchange
+
+# JWT
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=1d
+
+# Session
+SESSION_SECRET=your_session_secret
+
+# API
+CRYPTO_API_KEY=your_api_key
+
+# Node
+NODE_ENV=production
+```
+
+## Getting Started
+
+### Running with Docker Compose (Recommended)
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/crypto-exchange.git
+   cd crypto-exchange
+   ```
+
+2. Create a `.env` file with the required environment variables.
+
+3. Build and start the containers:
+   ```
+   docker-compose up -d
+   ```
+
+4. Access the application:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:4000/api
+
+### Local Development
+
+#### Backend
+
+1. Navigate to the backend directory:
+   ```
+   cd backend
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Start the development server:
+   ```
+   npm run dev
+   ```
+
+#### Frontend
+
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Start the development server:
+   ```
+   npm start
+   ```
+
+## API Documentation
+
+### Authentication
+
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Log in a user
+- `POST /api/auth/logout` - Log out a user
+
+### Wallets
+
+- `GET /api/wallets` - Get all user wallets
+- `GET /api/wallets/:currency` - Get a specific wallet
+- `POST /api/wallets` - Create a new wallet
+
+### Trading
+
+- `GET /api/trading/rate/:fromCurrency/:toCurrency` - Get exchange rate
+- `POST /api/trading/exchange` - Execute a trade
+- `GET /api/trading/transactions` - Get transaction history
+- `GET /api/trading/transactions/:id` - Get transaction details
+
+## Scaling Considerations
+
+This application is designed with scalability in mind:
+
+- **Connection Pooling**: Efficiently manages database connections
+- **Redis Caching**: Reduces database load for frequently accessed data
+- **Rate Limiting**: Prevents API abuse
+- **Horizontal Scaling**: Can be scaled by adding more backend containers behind a load balancer
+- **Database Indexing**: Optimized for performance at scale
+
+## Security Features
+
+- **Password Hashing**: Using bcrypt for secure password storage
+- **JWT Authentication**: Secure API access
+- **Input Validation**: Prevents injection attacks
+- **Rate Limiting**: Prevents brute force attacks
+- **Session Management**: Secure session handling
+- **HTTPS**: Configured for production use
+
+## Production Deployment
+
+For production deployment:
+
+1. Update the `.env` file with production values
+2. Use a reverse proxy like Nginx for SSL termination
+3. Set up a load balancer for multiple backend instances
+4. Configure database backups
+5. Set up monitoring and logging
+
+Example docker-compose command for production:
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+## Monitoring and Maintenance
+
+- Use the `/health` endpoint to check service status
+- Set up log rotation for container logs
+- Monitor database performance
+- Set up alerts for system metrics
+
+## License
+
+MIT
+
+## Author
+
+Your Name
+
+
+
+

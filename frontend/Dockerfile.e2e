@@ -1,0 +1,16 @@
+FROM cypress/included:12.14.0
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install npm dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Command will be provided in docker-compose
+
+

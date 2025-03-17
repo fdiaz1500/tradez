@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Test services
+  backend-test:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.test
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db-test:5432/crypto_exchange_test
+      - JWT_SECRET=test-jwt-secret
+      - SESSION_SECRET=test-session-secret
+      - REDIS_URL=redis://redis-test:6379
+    depends_on:
+      - db-test
+      - redis-test
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - test-network
+
+  # Test infrastructure
+  db-test:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=crypto_exchange_test
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - test-network
+
+  redis-test:
+    image: redis:7-alpine
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+
+
+
