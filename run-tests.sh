@@ -38,7 +38,9 @@ done
 
 # Function to run docker-compose command
 run_docker_compose() {
-  docker-compose -f docker-compose.yml -f docker-compose.test.yml $@
+  # DEBUG
+  # docker-compose -f docker-compose.yml -f docker-compose.test.yml $@
+  docker-compose -f docker-compose.test.yml $@
 }
 
 # Function to wait for a service to be ready
