@@ -21,9 +21,9 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db:5432/crypto_exchange
-      - JWT_SECRET=${JWT_SECRET}
-      - SESSION_SECRET=${SESSION_SECRET}
-      - CRYPTO_API_KEY=${CRYPTO_API_KEY}
+      - JWT_SECRET=${JWT_SECRET:-jwt_secret}
+      - SESSION_SECRET=${SESSION_SECRET:-session_secret}
+      - CRYPTO_API_KEY=${CRYPTO_API_KEY:-crypto_api_key}
       - REDIS_URL=redis://redis:6379
     depends_on:
       - db
@@ -38,7 +38,7 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=crypto_exchange
     volumes:
       - postgres_data:/var/lib/postgresql/data
