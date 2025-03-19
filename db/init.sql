@@ -154,6 +154,11 @@ INSERT INTO exchange_rates (from_currency, to_currency, rate) VALUES
 INSERT INTO users (id, email, password_hash, first_name, last_name, role) VALUES 
 ('00000000-0000-0000-0000-000000000000', 'demo@example.com', '$2b$12$K8kRWmRtyaJVJGYK4aroA.XKKTrn1WEtVHlZo7gHWvDUxP2prq.Re', 'Demo', 'User', 'user');
 
+-- Add another testing user
+-- Password: Password (hashed with bcrypt)
+INSERT INTO users (id, email, password_hash, first_name, last_name, role) VALUES 
+('00000000-0000-0000-0000-000000000000', 'user@example.com', '$2b$12$p54.NB3YSU83E1yHTtixUuR6668l2CFedERrV0R3g6crnVvIbvaI2', 'User', 'User', 'user');
+
 -- Add default wallets with some funds
 INSERT INTO wallets (user_id, currency, balance) VALUES
 ('00000000-0000-0000-0000-000000000000', 'BTC', 1.50000000),
