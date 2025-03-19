@@ -1,0 +1,562 @@
+To interact with a PostgreSQL database running in a Docker container from the host machine, you can use several commands. Below are some common tasks and the corresponding commands:
+1. Connect to the PostgreSQL Database
+
+To connect to the PostgreSQL database running inside the Docker container, you can use the psql command from the host machine. First, ensure you have the psql client installed on your host machine.
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name>
+
+    Replace <username> with your PostgreSQL username.
+
+    Replace <database_name> with the name of the database you want to connect to.
+
+If your PostgreSQL container is not exposing the default port (5432) or is using a different port, you can specify the port with the -p option:
+bash
+Copy
+
+psql -h localhost -p <port> -U <username> -d <database_name>
+
+2. List All Databases
+
+To list all databases in the PostgreSQL instance:
+bash
+Copy
+
+psql -h localhost -U <username> -l
+
+3. Execute a SQL Query
+
+You can execute a SQL query directly from the command line:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM your_table;"
+
+4. Backup a Database
+
+To create a backup of a database:
+bash
+Copy
+
+pg_dump -h localhost -U <username> -d <database_name> -f backup.sql
+
+5. Restore a Database
+
+To restore a database from a backup file:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -f backup.sql
+
+6. Check Running Queries
+
+To check currently running queries:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_activity;"
+
+7. Kill a Running Query
+
+To kill a running query, first find the PID of the query using the pg_stat_activity view, then use the pg_terminate_backend function:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT pg_terminate_backend(<pid>);"
+
+Replace <pid> with the process ID of the query you want to terminate.
+8. Check Database Size
+
+To check the size of a database:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT pg_size_pretty(pg_database_size('<database_name>'));"
+
+9. Check Table Sizes
+
+To check the sizes of tables within a database:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT table_name, pg_size_pretty(pg_total_relation_size(table_name)) FROM information_schema.tables WHERE table_schema = 'public';"
+
+10. Check Connection Count
+
+To check the number of active connections:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT COUNT(*) FROM pg_stat_activity;"
+
+11. Check PostgreSQL Version
+
+To check the PostgreSQL version:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT version();"
+
+12. Check PostgreSQL Configuration
+
+To view the current configuration settings:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SHOW ALL;"
+
+13. Check for Locks
+
+To check for locks in the database:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_locks;"
+
+14. Check for Long-Running Transactions
+
+To identify long-running transactions:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_activity WHERE state != 'idle' AND now() - query_start > interval '5 minutes';"
+
+15. Check for Replication Status (if applicable)
+
+If you are using replication, you can check the replication status:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_replication;"
+
+16. Check for Dead Tuples
+
+To check for dead tuples (useful for vacuuming):
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT relname, n_dead_tup FROM pg_stat_user_tables;"
+
+17. Check for Index Usage
+
+To check index usage statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_indexes;"
+
+18. Check for Cache Hit Ratio
+
+To check the cache hit ratio:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT sum(heap_blks_read) as heap_read, sum(heap_blks_hit)  as heap_hit, (sum(heap_blks_hit) - sum(heap_blks_read)) / sum(heap_blks_hit) as ratio FROM pg_statio_user_tables;"
+
+19. Check for Vacuum Statistics
+
+To check vacuum statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_tables;"
+
+20. Check for Autovacuum Status
+
+To check the status of autovacuum:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_activity WHERE query LIKE 'autovacuum:%';"
+
+21. Check for Prepared Transactions
+
+To check for prepared transactions:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_prepared_xacts;"
+
+22. Check for Replication Slots (if applicable)
+
+To check replication slots:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_replication_slots;"
+
+23. Check for Logical Decoding Status (if applicable)
+
+To check logical decoding status:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_logical_slot_peek_changes('<slot_name>', NULL, NULL);"
+
+24. Check for WAL (Write-Ahead Logging) Status
+
+To check WAL status:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_archiver;"
+
+25. Check for Background Writer Statistics
+
+To check background writer statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_bgwriter;"
+
+26. Check for Checkpoint Statistics
+
+To check checkpoint statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_checkpoints;"
+
+27. Check for User-Defined Statistics
+
+To check user-defined statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_functions;"
+
+28. Check for System-Wide Statistics
+
+To check system-wide statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_database;"
+
+29. Check for Table Bloat
+
+To check for table bloat:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_tables WHERE n_dead_tup > 0;"
+
+30. Check for Index Bloat
+
+To check for index bloat:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0;"
+
+31. Check for Unused Indexes
+
+To check for unused indexes:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0;"
+
+32. Check for Table Statistics
+
+To check table statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_tables;"
+
+33. Check for Index Statistics
+
+To check index statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_indexes;"
+
+34. Check for Sequence Statistics
+
+To check sequence statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_sequences;"
+
+35. Check for Function Statistics
+
+To check function statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_functions;"
+
+36. Check for Trigger Statistics
+
+To check trigger statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_triggers;"
+
+37. Check for View Statistics
+
+To check view statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_views;"
+
+38. Check for Foreign Table Statistics
+
+To check foreign table statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_foreign_tables;"
+
+39. Check for Materialized View Statistics
+
+To check materialized view statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_user_matviews;"
+
+40. Check for Subscription Statistics (if applicable)
+
+To check subscription statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_subscription;"
+
+41. Check for Replication Origin Statistics (if applicable)
+
+To check replication origin statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_replication_origin;"
+
+42. Check for Replication Slot Statistics (if applicable)
+
+To check replication slot statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_replication_slots;"
+
+43. Check for Logical Replication Statistics (if applicable)
+
+To check logical replication statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_logical_replication;"
+
+44. Check for Logical Decoding Statistics (if applicable)
+
+To check logical decoding statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_logical_decoding;"
+
+45. Check for Background Worker Statistics
+
+To check background worker statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_bgworker;"
+
+46. Check for Archiver Statistics
+
+To check archiver statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_archiver;"
+
+47. Check for Checkpointer Statistics
+
+To check checkpointer statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_checkpointer;"
+
+48. Check for WAL Receiver Statistics (if applicable)
+
+To check WAL receiver statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_wal_receiver;"
+
+49. Check for WAL Sender Statistics (if applicable)
+
+To check WAL sender statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_wal_sender;"
+
+50. Check for WAL Writer Statistics
+
+To check WAL writer statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_wal_writer;"
+
+51. Check for Autovacuum Worker Statistics
+
+To check autovacuum worker statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum;"
+
+52. Check for Autovacuum Launcher Statistics
+
+To check autovacuum launcher statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher;"
+
+53. Check for Autovacuum Worker IO Statistics
+
+To check autovacuum worker IO statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_io;"
+
+54. Check for Autovacuum Launcher IO Statistics
+
+To check autovacuum launcher IO statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_io;"
+
+55. Check for Autovacuum Worker Memory Statistics
+
+To check autovacuum worker memory statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_memory;"
+
+56. Check for Autovacuum Launcher Memory Statistics
+
+To check autovacuum launcher memory statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_memory;"
+
+57. Check for Autovacuum Worker CPU Statistics
+
+To check autovacuum worker CPU statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_cpu;"
+
+58. Check for Autovacuum Launcher CPU Statistics
+
+To check autovacuum launcher CPU statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_cpu;"
+
+59. Check for Autovacuum Worker Wait Statistics
+
+To check autovacuum worker wait statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_wait;"
+
+60. Check for Autovacuum Launcher Wait Statistics
+
+To check autovacuum launcher wait statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_wait;"
+
+61. Check for Autovacuum Worker Lock Statistics
+
+To check autovacuum worker lock statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_lock;"
+
+62. Check for Autovacuum Launcher Lock Statistics
+
+To check autovacuum launcher lock statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_lock;"
+
+63. Check for Autovacuum Worker Transaction Statistics
+
+To check autovacuum worker transaction statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_xact;"
+
+64. Check for Autovacuum Launcher Transaction Statistics
+
+To check autovacuum launcher transaction statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_xact;"
+
+65. Check for Autovacuum Worker Buffer Statistics
+
+To check autovacuum worker buffer statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_buffer;"
+
+66. Check for Autovacuum Launcher Buffer Statistics
+
+To check autovacuum launcher buffer statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_buffer;"
+
+67. Check for Autovacuum Worker File Statistics
+
+To check autovacuum worker file statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_file;"
+
+68. Check for Autovacuum Launcher File Statistics
+
+To check autovacuum launcher file statistics:
+bash
+Copy
+
+psql -h localhost -U <username> -d <database_name> -c "SELECT * FROM pg_stat_autovacuum_launcher_file;"
+
+69
+New chat
+
+
+
+
